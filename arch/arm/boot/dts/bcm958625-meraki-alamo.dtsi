@@ -1,0 +1,63 @@
+// SPDX-License-Identifier: GPL-2.0-or-later OR MIT
+/*
+ * Device Tree Bindings for Cisco Meraki MX65 series (Alamo).
+ *
+ * Copyright (C) 2020-2021 Matthew Hagan <mnhagan88@gmail.com>
+ */
+
+#include "bcm958625-meraki-mx6x-common.dtsi"
+
+/ {
+    gpio-buttons {
+            compatible = "gpio-keys-polled";
+            autorepeat;
+            poll-interval = <20>;
+            button@1 {
+                    label = "soft_reset";
+                    linux,code = <0x198>;     // EV_RESTART
+                    linux,input-type = <1>;   // EV_KEY
+                    debounce-interval = <60>;
+                    gpios = <&gpioa 8 1>;
+            };
+    };
+
+	leds {
+                compatible = "gpio-leds";
+                white {
+                        label = "power:white";
+                        gpios = <&gpioa 31 0>;
+                        default-state = "off";
+                };
+
+                port0right {
+                        label = "port0:right";
+                        gpios = <&gpioa 24 1>;
+                        default-state = "off";
+                };
+                port0left {
+                        label = "port0:left";
+                        gpios = <&gpioa 25 1>;
+                        default-state = "off";
+                };
+                port1right {
+                        label = "port1:right";
+                        gpios = <&gpioa 26 1>;
+                        default-state = "off";
+                };
+                port1left {
+                        label = "port1:left";
+                        gpios = <&gpioa 27 1>;
+                        default-state = "off";
+                };
+        };
+		
+		power_led {
+                compatible = "gpio-leds";
+                orange {
+                        label = "power:orange";
+                        gpios = <&gpioa 3 0>;
+                };
+        };
+};
+
+

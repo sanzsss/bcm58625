@@ -1,0 +1,137 @@
+// SPDX-License-Identifier: GPL-2.0-or-later OR MIT
+/*
+ * Device Tree Bindings for Cisco Meraki MX64 series (Kingpin).
+ *
+ * Copyright (C) 2020-2021 Matthew Hagan <mnhagan88@gmail.com>
+ */
+
+#include "bcm958625-meraki-mx6x-common.dtsi"
+
+/ {
+
+    gpio-buttons {
+        compatible = "gpio-keys-polled";
+        autorepeat;
+        poll-interval = <20>;
+        button@1 {
+            label = "soft_reset";
+            linux,code = <0x198>;     // EV_RESTART
+            linux,input-type = <1>;   // EV_KEY
+            debounce-interval = <60>;
+            gpios = <&gpioa 6 1>;
+        };
+    };
+
+    leds {
+        compatible = "gpio-leds";
+        white {
+            label = "power:white";
+            gpios = <&gpioa 31 0>;
+            default-state = "off";
+        };
+
+        port0right {
+            label = "port0:right";
+            gpios = <&gpioa 18 1>;
+            default-state = "off";
+        };
+        port0left {
+            label = "port0:left";
+            gpios = <&gpioa 19 1>;
+            default-state = "off";
+        };
+        port1right {
+            label = "port1:right";
+            gpios = <&gpioa 20 1>;
+            default-state = "off";
+        };
+        port1left {
+            label = "port1:left";
+            gpios = <&gpioa 24 1>;
+            default-state = "off";
+        };
+        port2right {
+            label = "port2:right";
+            gpios = <&gpioa 25 1>;
+            default-state = "off";
+        };
+        port2left {
+            label = "port2:left";
+            gpios = <&gpioa 26 1>;
+            default-state = "off";
+        };
+        port3right {
+            label = "port3:right";
+            gpios = <&gpioa 27 1>;
+            default-state = "off";
+        };
+        port3left {
+            label = "port3:left";
+            gpios = <&gpioa 28 1>;
+            default-state = "off";
+        };
+        port4right {
+            label = "port4:right";
+            gpios = <&gpioa 29 1>;
+            default-state = "off";
+        };
+        port4left {
+            label = "port4:left";
+            gpios = <&gpioa 30 1>;
+            default-state = "off";
+        };
+    };
+	power-led {
+        compatible = "gpio-leds";
+        orange {
+            label = "power:orange";
+            gpios = <&gpioa 0 1>;
+            default-state = "on";
+        };
+    };
+};
+
+&srab {
+	compatible = "brcm,bcm58625-srab", "brcm,nsp-srab";
+	status = "okay";
+
+	ports {
+		#address-cells = <1>;
+		#size-cells = <0>;
+
+		port@0 {
+			label = "lan0";
+			reg = <0>;
+		};
+
+		port@1 {
+			label = "lan1";
+			reg = <1>;
+		};
+
+		port@2 {
+			label = "lan2";
+			reg = <2>;
+		};
+
+		port@3 {
+			label = "lan3";
+			reg = <3>;
+		};
+
+		port@4 {
+			label = "wan";
+			reg = <4>;
+		};
+
+		port@8 {
+			ethernet = <&amac2>;
+			reg = <8>;
+			label = "cpu";
+			fixed-link {
+				speed = <1000>;
+				full-duplex;
+			};
+		};
+	};
+};
