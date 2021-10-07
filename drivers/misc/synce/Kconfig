@@ -1,0 +1,21 @@
+menu "SyncE Support"
+
+config BCM_NS2_SYNCE
+	tristate "Broadcom NS2 SyncE support"
+	depends on ARCH_BCM_IPROC
+	help
+	  Add Synchronous Ethernet (SyncE) driver support for Broadcom
+	  Northstar2 platform.
+
+	  If unsure, say N.
+
+config BCM_NSP_SYNCE
+	tristate "Broadcom NSP SyncE support"
+	depends on ARCH_BCM_IPROC
+	help
+	  Add Synchronous Ethernet (SyncE) driver support for Broadcom
+	  Northstar Plus platform.
+
+	  If unsure, say N.
+
+endmenu

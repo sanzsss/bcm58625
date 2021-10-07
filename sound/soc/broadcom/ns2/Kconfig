@@ -1,0 +1,25 @@
+config SND_SOC_NORTHSTAR2
+	tristate "SoC platform audio for Broadcom NORTHSTAR2 chips"
+	depends on HAS_IOMEM
+	help
+	  Say Y if you want to add support for SoC audio on Broadcom APs
+
+	  If you don't know what to do here, say N.
+
+config SND_SOC_NORTHSTAR2_SSP
+	depends on SND_SOC_NORTHSTAR2
+	tristate
+
+config SND_SOC_SI3226X
+	depends on SND_SOC_NORTHSTAR2
+        tristate
+
+config SND_SOC_NORTHSTAR2_AUDIO_MACHINE
+	tristate "SoC Audio support for Broadcom NORTHSTAR2 dev board with SiLabs/TI module"
+	depends on SND_SOC_NORTHSTAR2
+	select SND_SOC_NORTHSTAR2_SSP
+	select SND_SOC_SI3226X
+	select SND_SOC_TLV320AIC3X
+	help
+	  Say Y if you want to add support for NORTHSTAR2 SoC voip audio on
+	  development boards (958710K, 958712K)

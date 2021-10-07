@@ -1,0 +1,18 @@
+Broadcom FA2 Flow Accelerator Device Tree Bindings
+-------------------------------------------------------------
+
+Required properties:
+ - compatible:	"brcm,fa2"
+ - reg:		Address and length of the FA2 CTF (cut thru fwd) registers,
+ - reg-names:	Names of the registers.  Must have "fa-regs"
+
+Optional properties:
+- none
+
+Examples:
+fa2: accelerator@25c00 {
+	compatible = "brcm,fa2";
+	reg = <0x025c00 0x200>;
+	reg-names = "fa-regs";
+};
+

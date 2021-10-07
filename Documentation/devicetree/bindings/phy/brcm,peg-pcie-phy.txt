@@ -1,0 +1,54 @@
+Broadcom Pegasus PCIe PHY
+
+Required bus properties:
+- reg: MDIO Bus number for the MDIO interface
+- #address-cells: must be 1
+- #size-cells: must be 0
+
+Required PHY properties:
+- compatible: must be "brcm,peg-pcie-phy"
+- reg: MDIO Phy ID for the MDIO interface
+- #address-cells: must be 1
+- #size-cells: must be 0
+
+Each PCIe PHY should be a child bus node of "brcm,mdio-mux-iproc" node.
+
+
+Example:
+	mdio_mux_iproc: mdio-mux@22023c {
+		compatible = "brcm,mdio-mux-iproc";
+		reg = <0x22023c 0x14>;
+		#address-cells = <1>;
+		#size-cells = <0>;
+
+		mdio@0 {
+			reg = <0x0>;
+			#address-cells = <1>;
+			#size-cells = <0>;
+
+			pci_phy0: pci-phy@0 {
+				compatible = "brcm,peg-pcie-phy";
+				reg = <0x0>;
+				#phy-celss = <0>;
+				status = "disabled";
+			};
+		}
+	};
+
+	/* users of the PCIe phy */
+	&mdio_mux_iproc {
+		..
+		..
+		mdio@0 {
+			pci_phy0: pci-phy@0 {
+				status = "ok";
+			};
+		};
+	};
+	..
+	..
+
+	&pcie0 {
+		phys = <&pci_phy0>;
+		status = "ok";
+	};

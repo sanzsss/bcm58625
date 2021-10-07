@@ -1,0 +1,74 @@
+Broadcom Pegasus PCIe/SATA combo PHY
+
+Required bus properties:
+- reg: MDIO Bus number for the MDIO interface
+- #address-cells: must be 1
+- #size-cells: must be 0
+
+Required PHY properties:
+- compatible: must be "brcm,peg-combo-phy"
+- reg: MDIO Phy ID for the MDIO interface
+- device-type: must be either "pcie" or "sata"
+- #address-cells: must be 1
+- #size-cells: must be 0
+
+Each PCIe/SATA PHY should be a child bus node of "brcm,mdio-mux-iproc" node.
+
+
+Example:
+	mdio_mux_iproc: mdio-mux@22023c {
+		compatible = "brcm,mdio-mux-iproc";
+		reg = <0x22023c 0x14>;
+		#address-cells = <1>;
+		#size-cells = <0>;
+
+		mdio@1 {
+			reg = <0x1>;
+			#address-cells = <1>;
+			#size-cells = <0>;
+
+			combo_phy0: combo-phy@0 {
+				compatible = "brcm,peg-combo-phy";
+				reg = <0x2>;
+				#phy-celss = <0>;
+				status = "disabled";
+			};
+		}
+		mdio@2 {
+			reg = <0x2>;
+			#address-cells = <1>;
+			#size-cells = <0>;
+
+			combo_phy1: combo-phy@0 {
+				compatible = "brcm,peg-combo-phy";
+				reg = <0x3>;
+				#phy-celss = <0>;
+				status = "disabled";
+			};
+		};
+	};
+
+	/* users of the PCIe/SATA phy */
+	&mdio_mux_iproc {
+		..
+		..
+		mdio@1 {
+			combo_phy0: combo-phy@0 {
+				device-type = "pcie";
+				status = "ok";
+			};
+		};
+		mdio@2 {
+			combo_phy1: combo-phy@0 {
+				device-type = "sata";
+				status = "ok";
+			};
+		};
+	};
+	..
+	..
+
+	&pcie1 {
+		phys = <&combo_phy0>;
+		status = "ok";
+	};

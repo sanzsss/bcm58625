@@ -1,0 +1,102 @@
+/*
+ *  BSD LICENSE
+ *
+ *  Copyright(c) 2016 Broadcom Limited.  All rights reserved.
+ *
+ *  Redistribution and use in source and binary forms, with or without
+ *  modification, are permitted provided that the following conditions
+ *  are met:
+ *
+ *    * Redistributions of source code must retain the above copyright
+ *      notice, this list of conditions and the following disclaimer.
+ *    * Redistributions in binary form must reproduce the above copyright
+ *      notice, this list of conditions and the following disclaimer in
+ *      the documentation and/or other materials provided with the
+ *      distribution.
+ *    * Neither the name of Broadcom Corporation nor the names of its
+ *      contributors may be used to endorse or promote products derived
+ *      from this software without specific prior written permission.
+ *
+ *  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ *  "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ *  LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ *  A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ *  OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ *  SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ *  LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ *  DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ *  THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+/dts-v1/;
+
+/* Reserve the secure memory region */
+/memreserve/ 0xA0000000 0x100000;
+
+#include "pegasus.dtsi"
+
+/ {
+	model = "Broadcom Pegasus BCM58540";
+	compatible = "brcm,bcm58540", "brcm,pegasus";
+
+	chosen {
+		bootargs = "maxcpus=4 console=ttyS0,115200n8 debug\
+			    earlycon=uart8250,mmio32,0x00300000";
+	};
+
+	memory {
+		device_type = "memory";
+		reg = <0x00000000 0x80000000 0x00000000 0x80000000>;
+	};
+
+};
+
+&uart0 {
+	status = "ok";
+};
+
+&mdio_mux_iproc {
+	mdio@0 {
+		pci_phy0: pci-phy@0 {
+			status = "ok";
+		};
+	};
+	mdio@1 {
+		combo_phy0: combo-phy@0 {
+			device-type = "pcie";
+			status = "ok";
+		};
+	};
+	mdio@2 {
+		combo_phy1: combo-phy@0 {
+			device-type = "pcie";
+			status = "ok";
+		};
+	};
+};
+
+/* Default: PCIe2.0 (2 by 1x + 1 by 2x i.e. x1,x1,x2) */
+
+&pcie0 {
+	phys = <&pci_phy0>;
+	brcm,pcie-num-lanes = <1>;
+	status = "ok";
+};
+
+&pcie1 {
+	phys = <&combo_phy0>;
+	brcm,pcie-num-lanes = <1>;
+	/* status = "ok"; */
+};
+
+&pcie2 {
+	phys = <&combo_phy1>;
+	brcm,pcie-num-lanes = <2>;
+	/* status = "ok"; */
+};
+
+&enet2 {
+	status = "disabled";
+};

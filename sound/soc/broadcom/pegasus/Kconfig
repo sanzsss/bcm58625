@@ -1,0 +1,25 @@
+config SND_SOC_PEGASUS
+	tristate "SoC platform audio for Broadcom PEGASUS chips"
+	#depends on HAS_IOMEM
+	help
+	  Say Y if you want to add support for SoC audio on Broadcom APs
+
+	  If you don't know what to do here, say N.
+
+config SND_SOC_PEGASUS_SSP
+	depends on SND_SOC_PEGASUS
+	tristate
+
+config SND_SOC_SI3226X
+	depends on SND_SOC_PEGASUS
+        tristate
+
+config SND_SOC_PEGASUS_AUDIO_MACHINE
+	tristate "SoC Audio support for Broadcom PEGASUS dev board with SiLabs/TI module"
+	depends on SND_SOC_PEGASUS
+	select SND_SOC_PEGASUS_SSP
+	select SND_SOC_SI3226X
+	select SND_SOC_TLV320AIC3X
+	help
+	  Say Y if you want to add support for PEGASUS SoC voip audio on
+	  development boards (bcm958543k).

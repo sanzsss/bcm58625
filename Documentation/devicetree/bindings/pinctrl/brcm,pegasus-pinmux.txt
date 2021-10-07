@@ -1,0 +1,108 @@
+Broadcom Pegasus IOMUX Controller
+
+The Pegasus IOMUX controller supports group based mux configuration. There
+are some individual pins that support modifying the pinconf parameters.
+
+Required properties:
+
+- compatible:
+    Must be "brcm,pegasus-pinmux"
+
+- reg:
+    Define the base and range of the I/O address space that contains the
+    Pegasus IOMUX and pin configuration registers.
+
+Properties in sub nodes:
+
+- function:
+    The mux function to select
+
+- groups:
+    The list of groups to select with a given function
+
+- pins:
+    List of pin names to change configuration
+
+The generic properties bias-disable, bias-pull-down, bias-pull-up,
+drive-strength, slew-rate, input-enable, input-disable are supported
+for some individual pins listed at the end.
+
+For more details, refer to
+Documentation/devicetree/bindings/pinctrl/pinctrl-bindings.txt
+
+For example:
+
+	pinctrl: pinctrl@00200aa0 {
+		compatible = "brcm,pegasus-pinmux";
+		reg = <0x00200aa0 0x04>,
+		      <0x204f000c 0x04>,
+		      <0x002009b0 0xB0>;
+
+		pinctrl-names = "default";
+		pinctrl-0 = <&nand_sel &sflash_wp>;
+
+		/* Select nand function */
+		nand_sel: nand_sel {
+			function = "nand";
+			groups = "nand_grp";
+		};
+
+		/* Pull up the sflash_wp_n pin */
+		sflash_wp: sflash_wp_n {
+			pins = "sflash_wp_n";
+			bias-pull-up;
+		};
+	};
+
+List of supported functions and groups in Pegasus:
+
+"spi_grps": "spi0_grp", "spi1_grp"
+
+"uart_grps": "uart1_in_out_grp", "uart1_cts_rts_grp", "uart2_grp",
+	"uart3_grp", "uart1_ext_clk_grp"
+
+"nand": "nand_grp"
+
+"emmc_grps": "emmc_mfio_14_26_grp", "emmc_mfio_27_39_grp"
+
+"sdio_grps": "sdio_mfio_14_19_grp", "sdio_mfio_27_32_grp"
+
+"mdio_grps": "mdio_grp"
+
+"gpio": "gpio_0_3_grp", "gpio_7_9_grp", "gpio_6_8_grp", "gpio_10_11_grp",
+	"gpio_12_13_grp", "gpio_14_15", "gpio_16_19_grp", "gpio_4_5_0_grp",
+	"gpio_16_19_mfio_33_36_grp", "gpio_20_21_grp", "gpio_22_25_grp",
+	"gpio_26_27_grp", "gpio_28_31_grp", "gpio_28_30_grp",
+	"gpio_28_29_grp", "gpio_30_31_grp"
+
+"sgpio_grps": "sgpio_mfio_51_54_grp", "sgpio_mfio_55_58_grp"
+
+"audio_grps": "audio_mfio_45_48_grp", "audio_mfio_51_54_grp"
+
+"pwm_grps": "pwm_0_1_grp", "pwm_2_3_grp"
+
+"parled_grps": "parallel_led_grp"
+
+"serled_grps": "serial_led_grp"
+
+"synce_grps": "synce_output_mfio_4_5_grp", "synce_input_mfio_10_11_grp",
+	"synce_input_mfio_12_13_grp", "synce_output_mfio_10_11_grp",
+	"synce_output_mfio_12_13_grp"
+
+"timesync_grps": "time_sync_input_mfio_6_7_grp",
+	"time_sync_output_mfio_4_5_grp", "time_sync_output_mfio_6_7_grp",
+	"time_sync_input_mfio_43_44_grp", "time_sync_output_mfio_43_44_grp",
+	"time_sync_input_mfio_49_50_grp", "time_sync_output_mfio_49_50_grp"
+
+
+List of pins that support pinconf parameters:
+
+"mfio_0" to "mfio_62"
+"sflash_clk", "sflash_cs_I", "sflash_mosi", "sflash_miso", "sflash_wp_n",
+"sflash_hold_n", "dstrap_bit3", "dstrap_bit4", "i2c1_scl", "i2c1_sda",
+"i2c2_scl", "i2c2_sda", "i2c3_scl", "i2c3_sda", "i2s_ws_0", "i2s_sdout_0",
+"i2s_sdin_0", "i2s_bitclk_0", "i2s_mclk_0", "i2s_ws_1", "i2s_sdout_1",
+"i2s_sdin_1", "i2s_bitclk_1", "i2s_mclk_1", "i2s_ws_2", "i2s_sdout_2",
+"i2s_sdin_2", "i2s_bitclk_2", "i2s_mclk_2", "pcie0_perstb", "pcie1_perstb",
+"pcie2_perstb", "usb3_vbus_ppc", "usb2_vbus_ppc", "usb3_vbus_ovc",
+"usb2_vbus_ovc"

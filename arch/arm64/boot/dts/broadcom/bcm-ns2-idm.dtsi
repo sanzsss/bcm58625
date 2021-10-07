@@ -1,0 +1,529 @@
+/*
+ * Copyright 2016 Broadcom
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License, version 2, as
+ * published by the Free Software Foundation (the "GPL").
+ *
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * General Public License version 2 (GPLv2) for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * version 2 (GPLv2) along with this source code.
+ */
+
+#include <dt-bindings/interrupt-controller/arm-gic.h>
+#include <dt-bindings/interrupt-controller/irq.h>
+
+	idm {
+		compatible = "brcm,iproc-idm-monitor";
+		#address-cells = <1>;
+		#size-cells = <1>;
+		ranges;
+
+		/*
+		 *  For each slave IDM wrapper to be monitored,
+		 *  must include certain information.  The general
+		 *  form is this:
+		 *
+		 *  slave_name@_base_addr_ {
+		 *    reg = <_base_addr_ _length_>;
+		 *    interrupts = <GIC_SPI _irq_ IRQ_TYPE_LEVEL_HIGH>;
+		 *    error_irq;
+		 *    error_reset;
+		 *    timeout_irq;
+		 *    timeout_reset;
+		 *    timeout_exp = <_exponent_>;
+		 *  };
+		 *
+		 *  Where:
+		 *    _base_addr_ is appropriate width base address
+		 *    _length_ is 0x200
+		 *    _irq_ is the IRQ number on the GIC (global # - 32 on NS+)
+		 *    _exponent_ is the timeout exponent
+		 *
+		 *  Do not include timeout_irq if you do not want an
+		 *  interrupt for the slave timing out.
+		 *
+		 *  Do not inlcude timeout_reset if you do not want
+		 *  the slae to be reset on timeout.
+		 *
+		 *  Do not include error_irq if you do not want an
+		 *  interrupt for other slave errors.
+		 *
+		 *  Do not include error_reset if you do not want
+		 *  the slave to be reset on other slae errors.
+		 *
+		 *  The timeout is expressed as an exponent, specifically
+		 *  2^_exponent_ AXI bus cycles.  If the slave does not
+		 *  respond to an access within that many AXI cycles, the
+		 *  slave is considered to have timed out.  If you do not
+		 *  set a timeout, it is assumed to be 2^31 cycles; with
+		 *  500MHz AXI clock, this is just over 4s, which should
+		 *  be far more than any device needs to respond.
+		 */
+		/*
+		 *  We include all of the IDM slave wrappers here, but some
+		 *  are not accessible because of security settings.  Those
+		 *  requiring 'secure' accesses can not be used from Linux,
+		 *  and so must be marked 'disabled' here.
+		 *
+		 *  Note that this only means Linux will be unable to monitor
+		 *  or control these particular IDM wrappers.  If they were
+		 *  set up by the early boot process so timeouts were enabled,
+		 *  that setting will remain in force.  If the secure services
+		 *  code is handling them directly, even better.
+		 */
+
+		axi_pcie_s0@21004900 {
+			reg = <0x21004900 0x00000200>;
+			interrupts = <GIC_SPI 325 IRQ_TYPE_LEVEL_HIGH>;
+			error_irq;
+			timeout_irq;
+			timeout_exp = <31>;
+			status = "disabled";
+		};
+
+		axi_pcie_s1@21005900 {
+			reg = <0x21005900 0x00000200>;
+			interrupts = <GIC_SPI 326 IRQ_TYPE_LEVEL_HIGH>;
+			error_irq;
+			timeout_irq;
+			timeout_exp = <31>;
+			status = "disabled";
+		};
+
+		axi_pcie_s2@21006900 {
+			reg = <0x21006900 0x00000200>;
+			interrupts = <GIC_SPI 327 IRQ_TYPE_LEVEL_HIGH>;
+			error_irq;
+			timeout_irq;
+			timeout_exp = <31>;
+			status = "disabled";
+		};
+
+		axi_pcie_s3@21007900 {
+			reg = <0x21007900 0x00000200>;
+			interrupts = <GIC_SPI 328 IRQ_TYPE_LEVEL_HIGH>;
+			error_irq;
+			timeout_irq;
+			timeout_exp = <31>;
+			status = "disabled";
+		};
+
+		pcie_0_apbt@21008900 {
+			reg = <0x21008900 0x00000200>;
+			interrupts = <GIC_SPI 333 IRQ_TYPE_LEVEL_HIGH>;
+			error_irq;
+			timeout_irq;
+			timeout_exp = <31>;
+			status = "disabled";
+		};
+
+		pcie_0_ds11@21009900 {
+			reg = <0x21009900 0x00000200>;
+			interrupts = <GIC_SPI 335 IRQ_TYPE_LEVEL_HIGH>;
+			error_irq;
+			timeout_irq;
+			timeout_exp = <31>;
+			status = "disabled";
+		};
+
+		axi_pcie_s4@51004900 {
+			reg = <0x51004900 0x00000200>;
+			interrupts = <GIC_SPI 329 IRQ_TYPE_LEVEL_HIGH>;
+			error_irq;
+			timeout_irq;
+			timeout_exp = <31>;
+			status = "disabled";
+		};
+
+		axi_pcie_s5@51005900 {
+			reg = <0x51005900 0x00000200>;
+			interrupts = <GIC_SPI 330 IRQ_TYPE_LEVEL_HIGH>;
+			error_irq;
+			timeout_irq;
+			timeout_exp = <31>;
+			status = "disabled";
+		};
+
+		axi_pcie_s6@51006900 {
+			reg = <0x51006900 0x00000200>;
+			interrupts = <GIC_SPI 331 IRQ_TYPE_LEVEL_HIGH>;
+			error_irq;
+			timeout_irq;
+			timeout_exp = <31>;
+			status = "disabled";
+		};
+
+		axi_pcie_s7@51007900 {
+			reg = <0x51007900 0x00000200>;
+			interrupts = <GIC_SPI 332 IRQ_TYPE_LEVEL_HIGH>;
+			error_irq;
+			timeout_irq;
+			timeout_exp = <31>;
+			status = "disabled";
+		};
+
+		pcie_1_apbt@51008900 {
+			reg = <0x51008900 0x00000200>;
+			interrupts = <GIC_SPI 334 IRQ_TYPE_LEVEL_HIGH>;
+			error_irq;
+			timeout_irq;
+			timeout_exp = <31>;
+			status = "disabled";
+		};
+
+		pcie_1_ds11@51009900 {
+			reg = <0x51009900 0x00000200>;
+			interrupts = <GIC_SPI 336 IRQ_TYPE_LEVEL_HIGH>;
+			error_irq;
+			timeout_irq;
+			timeout_exp = <31>;
+			status = "disabled";
+		};
+
+		nic_chimp_s@60E00900 {
+			reg = <0x60E00900 0x00000200>;
+			interrupts = <GIC_SPI 462 IRQ_TYPE_LEVEL_HIGH>;
+			error_irq;
+			timeout_irq;
+			timeout_exp = <31>;
+			status = "disabled";
+		};
+
+		nic_paxc_s@60E01900 {
+			reg = <0x60E01900 0x00000200>;
+			interrupts = <GIC_SPI 460 IRQ_TYPE_LEVEL_HIGH>;
+			error_irq;
+			timeout_irq;
+			timeout_exp = <31>;
+			status = "disabled";
+		};
+
+		nic_axi2apb_s@60E02900 {
+			reg = <0x60E02900 0x00000200>;
+			interrupts = <GIC_SPI 461 IRQ_TYPE_LEVEL_HIGH>;
+			error_irq;
+			timeout_irq;
+			timeout_exp = <31>;
+			status = "disabled";
+		};
+
+		nic_ds0@60E05900 {
+			reg = <0x60E05900 0x00000200>;
+			interrupts = <GIC_SPI 463 IRQ_TYPE_LEVEL_HIGH>;
+			error_irq;
+			timeout_irq;
+			timeout_exp = <31>;
+			status = "disabled";
+		};
+
+		ports_axi2apb_s@61091900 {
+			reg = <0x61091900 0x00000200>;
+			interrupts = <GIC_SPI 342 IRQ_TYPE_LEVEL_HIGH>;
+			error_irq;
+			timeout_irq;
+			timeout_exp = <31>;
+			status = "disabled";
+		};
+
+		ports_ds0@61092900 {
+			reg = <0x61092900 0x00000200>;
+			interrupts = <GIC_SPI 343 IRQ_TYPE_LEVEL_HIGH>;
+			error_irq;
+			timeout_irq;
+			timeout_exp = <31>;
+			status = "disabled";
+		};
+
+		fs_axi2apb_s@61400900 {
+			reg = <0x61400900 0x00000200>;
+			interrupts = <GIC_SPI 200 IRQ_TYPE_LEVEL_HIGH>;
+			error_irq;
+			timeout_irq;
+			timeout_exp = <31>;
+			status = "disabled";
+		};
+
+		fs_axi2apb_div2_s@61401900 {
+			reg = <0x61401900 0x00000200>;
+			interrupts = <GIC_SPI 199 IRQ_TYPE_LEVEL_HIGH>;
+			error_irq;
+			timeout_irq;
+			timeout_exp = <31>;
+			status = "disabled";
+		};
+
+		fs_ddr_s@61402900 {
+			reg = <0x61402900 0x00000200>;
+			interrupts = <GIC_SPI 202 IRQ_TYPE_LEVEL_HIGH>;
+			error_irq;
+			timeout_irq;
+			timeout_exp = <31>;
+			status = "disabled";
+		};
+
+		fs_cop_s@61404900 {
+			reg = <0x61404900 0x00000200>;
+			interrupts = <GIC_SPI 201 IRQ_TYPE_LEVEL_HIGH>;
+			error_irq;
+			timeout_irq;
+			timeout_exp = <31>;
+			status = "disabled";
+		};
+
+		fs_rpe_s@61406900 {
+			reg = <0x61406900 0x00000200>;
+			interrupts = <GIC_SPI 206 IRQ_TYPE_LEVEL_HIGH>;
+			error_irq;
+			timeout_irq;
+			timeout_exp = <31>;
+			status = "disabled";
+		};
+
+		fs_sram_s@61407900 {
+			reg = <0x61407900 0x00000200>;
+			interrupts = <GIC_SPI 207 IRQ_TYPE_LEVEL_HIGH>;
+			error_irq;
+			timeout_irq;
+			timeout_exp = <31>;
+			status = "disabled";
+		};
+
+		fs_le_s@6140C900 {
+			reg = <0x6140C900 0x00000200>;
+			interrupts = <GIC_SPI 205 IRQ_TYPE_LEVEL_HIGH>;
+			error_irq;
+			timeout_irq;
+			timeout_exp = <31>;
+			status = "disabled";
+		};
+
+		fs_ds0@6140E900 {
+			reg = <0x6140E900 0x00000200>;
+			interrupts = <GIC_SPI 203 IRQ_TYPE_LEVEL_HIGH>;
+			error_irq;
+			timeout_irq;
+			timeout_exp = <31>;
+			status = "disabled";
+		};
+
+		fs_ds1@6140F900 {
+			reg = <0x6140F900 0x00000200>;
+			interrupts = <GIC_SPI 204 IRQ_TYPE_LEVEL_HIGH>;
+			error_irq;
+			timeout_irq;
+			timeout_exp = <31>;
+			status = "disabled";
+		};
+
+		crmu_s@65371900 {
+			reg = <0x65371900 0x00000200>;
+			interrupts = <GIC_SPI 367 IRQ_TYPE_LEVEL_HIGH>;
+			error_irq;
+			timeout_irq;
+			timeout_exp = <31>;
+			status = "disabled";
+		};
+
+		gic_s@65372900 {
+			reg = <0x65372900 0x00000200>;
+			interrupts = <GIC_SPI 372 IRQ_TYPE_LEVEL_HIGH>;
+			error_irq;
+			timeout_irq;
+			timeout_exp = <31>;
+			status = "disabled";
+		};
+
+		scr_sram_s@65373900 {
+			reg = <0x65373900 0x00000200>;
+			interrupts = <GIC_SPI 376 IRQ_TYPE_LEVEL_HIGH>;
+			error_irq;
+			timeout_irq;
+			timeout_exp = <31>;
+			status = "disabled";
+		};
+
+		mmu_s@65374900 {
+			reg = <0x65374900 0x00000200>;
+			interrupts = <GIC_SPI 373 IRQ_TYPE_LEVEL_HIGH>;
+			error_irq;
+			timeout_irq;
+			timeout_exp = <31>;
+			status = "disabled";
+		};
+
+		scr_ddr_s@65374900 {
+			reg = <0x65375900 0x00000200>;
+			interrupts = <GIC_SPI 368 IRQ_TYPE_LEVEL_HIGH>;
+			error_irq;
+			timeout_irq;
+			timeout_exp = <31>;
+			status = "disabled";
+		};
+
+		scr_axi2apb_s@65376900 {
+			reg = <0x65376900 0x00000200>;
+			interrupts = <GIC_SPI 375 IRQ_TYPE_LEVEL_HIGH>;
+			error_irq;
+			timeout_irq;
+			timeout_exp = <31>;
+			status = "disabled";
+		};
+
+		scr_axi2apb_div2_s@65377900 {
+			reg = <0x65377900 0x00000200>;
+			interrupts = <GIC_SPI 374 IRQ_TYPE_LEVEL_HIGH>;
+			error_irq;
+			timeout_irq;
+			timeout_exp = <31>;
+			status = "disabled";
+		};
+
+		scr_ds0@65378900 {
+			reg = <0x65378900 0x00000200>;
+			interrupts = <GIC_SPI 369 IRQ_TYPE_LEVEL_HIGH>;
+			error_irq;
+			timeout_irq;
+			timeout_exp = <31>;
+			status = "disabled";
+		};
+
+		scr_ds1@65379900 {
+			reg = <0x65379900 0x00000200>;
+			interrupts = <GIC_SPI 370 IRQ_TYPE_LEVEL_HIGH>;
+			error_irq;
+			timeout_irq;
+			timeout_exp = <31>;
+			status = "disabled";
+		};
+
+		scr_ds2@6537A900 {
+			reg = <0x6537A900 0x00000200>;
+			interrupts = <GIC_SPI 371 IRQ_TYPE_LEVEL_HIGH>;
+			error_irq;
+			timeout_irq;
+			timeout_exp = <31>;
+			status = "disabled";
+		};
+
+		hs_apbr@67005900 {
+			reg = <0x67005900 0x00000200>;
+			interrupts = <GIC_SPI 381 IRQ_TYPE_LEVEL_HIGH>;
+			error_irq;
+			timeout_irq;
+			timeout_exp = <31>;
+			status = "disabled";
+		};
+
+		hs_axiic_ds6@67006900 {
+			reg = <0x67006900 0x00000200>;
+			interrupts = <GIC_SPI 386 IRQ_TYPE_LEVEL_HIGH>;
+			error_irq;
+			timeout_irq;
+			timeout_exp = <31>;
+			status = "disabled";
+		};
+
+		hs_axiic_ds7@67007900 {
+			reg = <0x67007900 0x00000200>;
+			interrupts = <GIC_SPI 387 IRQ_TYPE_LEVEL_HIGH>;
+			error_irq;
+			timeout_irq;
+			timeout_exp = <31>;
+			status = "disabled";
+		};
+
+		hs_nand@67015900 {
+			reg = <0x67015900 0x00000200>;
+			interrupts = <GIC_SPI 377 IRQ_TYPE_LEVEL_HIGH>;
+			error_irq;
+			timeout_irq;
+			timeout_exp = <31>;
+			status = "disabled";
+		};
+
+		hs_pnor@67016900 {
+			reg = <0x67016900 0x00000200>;
+			interrupts = <GIC_SPI 378 IRQ_TYPE_LEVEL_HIGH>;
+			error_irq;
+			timeout_irq;
+			timeout_exp = <31>;
+			status = "disabled";
+		};
+
+		hs_qspi@67017900 {
+			reg = <0x67017900 0x00000200>;
+			interrupts = <GIC_SPI 379 IRQ_TYPE_LEVEL_HIGH>;
+			error_irq;
+			timeout_irq;
+			timeout_exp = <31>;
+			status = "disabled";
+		};
+
+		hs_rom_s0@67018900 {
+			reg = <0x67018900 0x00000200>;
+			interrupts = <GIC_SPI 380 IRQ_TYPE_LEVEL_HIGH>;
+			error_irq;
+			timeout_irq;
+			timeout_exp = <31>;
+			status = "disabled";
+		};
+
+		hs_apbs@67019900 {
+			reg = <0x67019900 0x00000200>;
+			interrupts = <GIC_SPI 382 IRQ_TYPE_LEVEL_HIGH>;
+			error_irq;
+			timeout_irq;
+			timeout_exp = <31>;
+			status = "disabled";
+		};
+
+		hs_axiic_ds8@6701A900 {
+			reg = <0x6701A900 0x00000200>;
+			interrupts = <GIC_SPI 388 IRQ_TYPE_LEVEL_HIGH>;
+			error_irq;
+			timeout_irq;
+			timeout_exp = <31>;
+			status = "disabled";
+		};
+
+		hs_axiic_ds9@6701B900 {
+			reg = <0x6701B900 0x00000200>;
+			interrupts = <GIC_SPI 389 IRQ_TYPE_LEVEL_HIGH>;
+			error_irq;
+			timeout_irq;
+			timeout_exp = <31>;
+			status = "disabled";
+		};
+
+		hs_apbx@67020900 {
+			reg = <0x67020900 0x00000200>;
+			interrupts = <GIC_SPI 383 IRQ_TYPE_LEVEL_HIGH>;
+			error_irq;
+			timeout_irq;
+			timeout_exp = <31>;
+			status = "disabled";
+		};
+
+		hs_apby@67021900 {
+			reg = <0x67021900 0x00000200>;
+			interrupts = <GIC_SPI 384 IRQ_TYPE_LEVEL_HIGH>;
+			error_irq;
+			timeout_irq;
+			timeout_exp = <31>;
+			status = "disabled";
+		};
+
+		hs_apbz@67022900 {
+			reg = <0x67022900 0x00000200>;
+			interrupts = <GIC_SPI 385 IRQ_TYPE_LEVEL_HIGH>;
+			error_irq;
+			timeout_irq;
+			timeout_exp = <31>;
+			status = "disabled";
+		};
+	};

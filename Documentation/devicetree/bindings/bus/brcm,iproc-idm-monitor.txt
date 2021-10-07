@@ -1,0 +1,77 @@
+Driver for ARM IDM slave wrappers on Broadcom iProc devices
+
+Globally required properties:
+
+- compatible : brcm,iproc-idm-monitor
+
+In addition, at least one IDM slave wrapper description would need
+to be provided as a child device.
+
+Per IDM slave wrapper monitor required properties:
+
+- reg : iomem address of this IDM slave wrapper controls
+- interrupts : interrupt for this IDM slave wrapper
+
+Per IDM slave wrapper monitor optional properties:
+
+- timeout_exp : Specifies the exponent for the timeout interval.
+- timeout_irq : If present, an interrupt is to be triggered on timeout.
+- timeout_reset : If present, the slave device will be reset on timeout.
+- error_irq : If present, an interrupt is to be triggered on other errors
+- error_reset : If present, the slave device will be reset on other errors.
+
+Note that if timeout_exp is not specified for a given slave device, the
+wrapper for that device will not issue timeouts.  It is possible for a
+hung device, or a device with clock disabled, to halt the entire system
+if timeout is not enabled and the device is accessed.  Timeout is in
+AXI clocks, 2^timeout_exp.  Once a timeout occurs, the slave will be
+considered timed out and further accesses to it will fail, at least until
+the device (or the system) is reset.
+
+Enabling interrupts allows faults detected by the IDM slave wrappers to
+be reported to the Linux kernel, and so included in the logs.  Since
+core accesses will also fault in other ways, this may seem redundant, but
+it is possible for other masters to trigger these faults, too, and in
+that case, the core may not become aware of them except through the
+interrupt mechanism provided here.
+
+Enabling reset is dangerous because this reset is asserted within the
+hardware itself.  At this time, there is no proper support for this
+feature.  To handle this cleanly, the kernel driver(s) associated with
+any downstream devices would need to be told to unconditionally and
+immediately remove the associated resources, and then the devices could
+be re-enumerated or restarted.  The necessary code is not yet inlcuded
+in the IDM slave wrapper fault handling code.
+
+In general, the boot code should enable timeouts for all IDM slave
+wrappers.  It is possible that you would not be able to expose some
+of them to the kernel due to 'secure' settings, but for all you can
+expose to the kernel, you should still set a timeout value.  This is
+to avoid accidental hard hangs.  It is strongly recommended to also
+enable interrupts for all IDM slave wrappers that the kernel can see.
+
+
+Example:
+
+        idm {
+                compatible = "brcm,iproc-idm-monitor";
+
+                ihost_s1 {
+                        reg = <0x18107900 0x00000200>;
+                        interrupts = <GIC_SPI 29 IRQ_TYPE_LEVEL_HIGH>;
+                        error_irq;
+                        timeout_irq;
+                        timeout_exp = <31>;
+                };
+
+                ddr_s1 {
+                        reg = <0x18109900 0x00000200>;
+                        interrupts = <GIC_SPI 31 IRQ_TYPE_LEVEL_HIGH>;
+                        error_irq;
+                        timeout_irq;
+                        timeout_exp = <31>;
+                };
+
+        };
+
+
